@@ -1,0 +1,51 @@
+4 major fixes on the Python roadmap
+
+Whether you're into machine learning, API building, devops, or containers and microservices, you will stand to gain from these Python advances
+
+Python never sits still. With each iteration, both the Python language and its most widely used implementation, CPython, move forward to make life a little easier for everyone using them.
+
+As Python becomes more popular, and its use cases expand, certain Python limitations—from slow startup to the lack of concurrency—become more glaring. The latest set of improvements are driven by the demands being imposed on Python in realms as diverse as automation, machine learning, and microservices. 
+
+Here we look at four key areas in which Python’s core development team is pushing for major improvements. 
+
+Shortening Python’s startup time
+
+Many of the improvements planned for Python fall into the general bucket of “make things faster.” One optimization at the top of the list is reducing the amount of time the CPython interpreter needs to start up. This may provide the biggest short-term bang for the development buck.
+
+There is no question Python’s startup time is a problem. Core CPython developer Victor Stinner has demonstrated that Python 3.7 (the current trunk version) starts anywhere from 2.3 to 2.8 times slower than Python 2.7. Perl 5 and PHP 7 launch five to 10 times faster than Python 3.
+
+Python 3’s sluggish starts are hardly incentive to persuade Python 2.x users to upgrade, all the more urgent given Python 2’s end-of-life in 2020. Nor does it help make a case for using Python, specifically, CPython, in environments where a short startup time is part of the job description—for instance, as a language runtime in a container. The shorter the startup time, the faster the container is ready to accept commands, and the more useful the language will be in any containerized environment (AWS Lambda, for instance).
+
+Speeding up Python’s named tuples
+
+One of the most general ways CPython’s core developers are eyeing to speed up the runtime—including startup time—is a faster implementation of named tuples.
+
+Tuples in Python are immutable lists of objects, such as integers or strings, that are accessed by their index positions—element 0, element 1, and so on. Named tuples, available in Python’s standard library, allow access to these elements by way of a dot attribute—e.g., address.zip_code instead of address[3]. This can make code much easier to read. 
+
+However, the current implementation of named tuples has been implicated as one of the possible culprits in Python’s slow startup time. Thus Python creator Guido van Rossum has decreed that named tuples should be vigorously optimized in CPython—both for the benefits it will provide CPython’s startup time, and for the benefits that will cascade down to all of the third-party applications that use CPython.
+
+One aspect of optimized CPython that emerged from this discussion, as singled out by van Rossum, is that the elements of the language that are most commonly used in the wild should be implemented as a native part of CPython—i.e. in C rather than in Python—as a way to speed them up.
+
+“The approach of generating source code and exec()ing it is a cool demonstration of Python’s expressive power, but it’s always been my sense that whenever we encounter a popular idiom that uses exec() and eval(), we should augment the language (or the built-ins) to avoid these calls,” wrote van Rossum.
+
+Refactoring CPython’s internal APIs
+
+A great many of CPython’s current limitations have a common cause: the need to maintain backward compatibility for its C API. In theory CPython could be rewritten to provide tremendous performance improvements across the board, but at the cost of breaking compatibility with a huge amount of software. The Python community has long prided itself on not making those kinds of breaking changes, except across language version boundaries (Python 2 vs. Python 3).
+
+One possible half-step, as proposed by core Python developer Victor Stinner, would be to refactor CPython’s C API to hide its implementation details. This way, the developers could more easily experiment with new optimizations that potentially break things—e.g., ditching the Global Interpreter Lock, or GIL. Tests for this refactoring would be conducted not only with CPython’s own test suite, but against the most common third-party packages that plug into the API, such as NumPy and SciPy.
+
+Refactoring CPython’s APIs would pay off in other ways. For one, it would make CPython’s code easier to navigate and understand, and would lower the bar for potential contributors. That complements existing steps already taken by the CPython team to keep developer and contributor interest healthy, such as moving the source repository to GitHub. 
+
+Ditching Python’s GIL (maybe)
+
+If there is one limitation of Python that is most commonly singled out as a problem in need of solving, it is the Global Interpreter Lock. The GIL ensures, among other things, that memory access to every object used by CPython is kept “thread-safe,” meaning that a Python object can be used by only one thread at a time. It also means that CPython is effectively single-threaded. Multithreaded, CPU-bound operations either need to be handled by way of C extensions or multiple instances of CPython.
+
+For much of Python’s lifetime, these limitations were accepted as part of the cost of working with Python. But as CPU clock speeds flatten out and cores proliferate, Python runs the risk of losing out to languages that natively handle multithreading.
+
+Of course, many of Python’s mainline applications, like machine learning and statistics, are accelerated by way of C code that is not bound by the GIL. But the problem is becoming harder to ignore. And a Python-native solution to the problem would be more portable across platforms, more flexible across applications, and more easily leveraged by developers.
+
+The most recent set of experiments to remove the GIL—the “Gilectomy,” as it’s called by CPython developer Larry Hastings—show that removing the GIL alone isn’t the complete answer. It’s possible to remove the GIL, but only at the cost of breaking backward compatibility with existing Python packages, mainly C extensions.
+
+To that end, any attempts to remove the GIL need to be backward compatible with the C API. So far, attempts to do that have come with a dramatic performance cost, as Hastings demonstrated in a talk at PyCon 2017.
+
+Right now, then, any plans for removing the GIL remain provisional and experimental, and have to be constrained by the way Python is used in the real world. But once the reworking of CPython’s APIs is complete, the GIL may become far easier to abandon.

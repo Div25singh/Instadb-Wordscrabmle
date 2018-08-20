@@ -1,0 +1,8 @@
+After completing this project, a learner should be able to understand and implement the following fundamental concepts of Python Programming in solving a real world problem.
+Variables
+Data Structures
+String Lists
+Control Structures
+If / else statements, For loop
+Functions
+File Handling and Operations
